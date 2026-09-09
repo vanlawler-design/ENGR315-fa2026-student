@@ -14,9 +14,15 @@ Note that Elon's capital will be $33B.
 
 ### all your code below ###
 
+initial = 33_000_000_000  # Elon's initial investment in US Treasury Bonds
+i = 0.0396  # 10-year bond interest rate
+j = 0.0432  # 20-year bond interest rate
 
 # final answer for 10-year
-ten_year_final = None
+ten_year_final = initial * (1 + i) ** 10
 
 # final answer for 20-year
-twenty_year_final = None
+twenty_year_final = initial * (1 + j) ** 20
+
+print ("Final value of 10-year investment: ${:,.2f}".format(ten_year_final))
+print ("Final value of 20-year investment: ${:,.2f}".format(twenty_year_final))
