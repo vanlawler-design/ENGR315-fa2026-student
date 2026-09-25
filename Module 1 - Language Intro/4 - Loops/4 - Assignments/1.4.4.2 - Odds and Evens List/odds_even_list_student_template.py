@@ -30,6 +30,12 @@ odds_list = []
 """
 Step 1: Write a FOR loop to iterate through the list nums
 """
+for i in nums:
+    if i % 2 == 0:
+        evens_list.append(i)
+    else:
+        odds_list.append(i)
+
 
 
 """

@@ -1,7 +1,8 @@
 import numpy as np
 
 # Approach #1: do a manual import for the file
-path = '../../data/ekg/mitdb_201.csv'
+#path = '../../data/ekg/mitdb_201.csv'
+path = 'data/ekg/mitdb_201.csv'
 
 # open the file
 try:
@@ -38,7 +39,7 @@ for line in file:
 file.close()
 
 # Approach #2: import the CSV file using numpy
-path = '../../data/ekg/mitdb_201.csv'
+path = 'data/ekg/mitdb_201.csv'
 
 # load data in matrix from CSV file; skip first two rows
 ekg_data = np.loadtxt(path, skiprows=2, delimiter=",")

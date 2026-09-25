@@ -85,7 +85,7 @@ if __name__ == "__main__":
     filename = "FP1.txt"
 
     # load force plate data (this path may change based upon where you place this file in your project)
-    path_to_data_folder = "../../data/drop-jump/force-plate/"
+    path_to_data_folder = "data/drop-jump/force-plate/"
 
     ### Do not modify below this line ###
 
