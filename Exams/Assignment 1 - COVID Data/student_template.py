@@ -68,3 +68,69 @@ def parse_nyt_data(file_path=''):
     return data
 
 ### YOUR CODE HERE ###
+
+from pathlib import Path
+
+data_file = Path(__file__).resolve().parents[2] / 'data' / 'covid' / 'us-counties.csv'
+
+if len(sys.argv) > 1:
+    data_file = Path(sys.argv[1])
+
+all_data = parse_nyt_data(str(data_file))
+
+for county in ['Harrisonburg city', 'Rockingham']:
+    county_data = []
+
+    for record in all_data:
+        if record[1] == county and record[2] == 'Virginia':
+            county_data.append(record)
+
+    # Dates use YYYY-MM-DD
+    county_data.sort()
+
+    dates = []
+    new_cases = []
+    first_case_date = ''
+    previous_cases = 0
+
+    for record in county_data:
+        current_date = record[0]
+        total_cases = record[4]
+
+        # Save the first date with a positive cumulative case count.
+        if first_case_date == '' and total_cases > 0:
+            first_case_date = current_date
+
+        # Subtract yesterday's cumulative total to find today's new cases.
+        dates.append(current_date)
+        new_cases.append(total_cases - previous_cases)
+        previous_cases = total_cases
+
+    print('\n' + county + ', Virginia')
+    print('Question 1: First reported positive case:', first_case_date)
+
+    # Find the largest daily increase
+    most_new_cases = max(new_cases)
+    print('Question 2: Greatest daily increase:', most_new_cases, 'cases')
+    for i in range(len(new_cases)):
+        if new_cases[i] == most_new_cases:
+            print('  Date:', dates[i])
+
+
+
+    # This CSV has consecutive daily records for both localities.
+    seven_day_totals = []
+    for i in range(len(new_cases) - 6):
+        week_total = 0
+        for j in range(i, i + 7):
+            week_total = week_total + new_cases[j]
+        seven_day_totals.append(week_total)
+
+    # Find the largest seven-day total
+    most_weekly_cases = max(seven_day_totals)
+    print('Question 3: Worst seven-day total:', most_weekly_cases, 'cases')
+    for i in range(len(seven_day_totals)):
+        if seven_day_totals[i] == most_weekly_cases:
+            print('  Period:', dates[i], 'through', dates[i + 6], '(inclusive)')
+
+# Negative daily changes are retained because they are data corrections.

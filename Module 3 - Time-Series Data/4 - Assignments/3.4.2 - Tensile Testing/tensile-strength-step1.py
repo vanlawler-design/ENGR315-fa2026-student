@@ -62,12 +62,12 @@ def calculate_stress(force, sample_diameter):
 
     # calculate the cross-section area (mm^2)
     ### your code here ###
+    cross_sectional_area = math.pi * (sample_diameter / 2) ** 2
 
     # calculate stress (MPa) from load (kN) and cross-sectional area
     ### your code here ###
+    stress = force / cross_sectional_area * 1000  # Convert kN to N and mm^2 to m^2
 
-    # delete this line and replace it with your own
-    stress = None
 
     return stress
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
 
     ### Do not modify below this line ###
 
-    path_to_directory = "../../../data/tensile/"
+    path_to_directory = "data/tensile/"
     path_to_samples = path_to_directory + material_folder + "/"
 
     # manually parse file to get gage diameter and then calculate cross-sectional area
@@ -102,9 +102,22 @@ if __name__ == "__main__":
         print("Error! No stress returned. Did you fill in the calculate_stress() method?")
         sys.exit(-1)
 
+
+    output_file = open("tensile_results.csv", 'w')
+    Header = "Sample_Name,Material_Type,Sample_Diameter\n"
+    output_file.write(Header)
+
+    string_header = (str(sample_name)+","+str(material_folder)+","+str(sample_diameter)+'\n')
+
+
+
     # use scatter plot so we don't assume a line (yet)
     plt.scatter(strain, stress, label="Stress - Strain")
     plt.xlabel('Strain (mm/mm)')
     plt.ylabel('Stress (MPa)')
     plt.title('Stress-Strain Curve for Sample ' + sample_name)
     plt.show()
+
+   
+
+    
