@@ -104,7 +104,7 @@ yield strength of at least 500 MPa
 print('\nTesting yield strength...')
 
 # path to raw tensile data
-path_to_file = '../../data/tensile/tensile_data.csv'
+path_to_file = 'data/tensile/tensile_data.csv'
 
 # load all tensile data into data frame
 df = pd.read_csv(path_to_file)
