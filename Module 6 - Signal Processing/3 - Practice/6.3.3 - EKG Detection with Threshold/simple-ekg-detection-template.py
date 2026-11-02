@@ -12,7 +12,7 @@ available_datasets = ["mitdb_201", "mitdb_213", "mitdb_219", "nstdb_118e00", "ns
 dataset = available_datasets[0]
 
 # load saved data from numpy array
-filepath = '../../../data/ekg/processed_'+dataset+'.npy'
+filepath = 'data/ekg/processed_'+dataset+'.npy'
 
 # once loaded, place in an array called signal. This is a 1-D signal of processed
 # heart beat data. No filtering/processing is required.
