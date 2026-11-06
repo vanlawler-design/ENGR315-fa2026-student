@@ -1,4 +1,8 @@
+from pathlib import Path
+
 import numpy as np
+from scipy.signal import butter, sosfiltfilt, find_peaks
+from scipy.ndimage import uniform_filter1d
 from ekg_testbench import EKGTestBench
 
 def detect_heartbeats(filepath):
@@ -9,42 +13,51 @@ def detect_heartbeats(filepath):
     beats: the indices of detected heartbeats
     """
     if filepath == '':
-        return list()
+        raise ValueError("Please provide a CSV filepath.")
 
     # import the CSV file using numpy
     path = filepath
 
     # load data in matrix from CSV file; skip first two rows
     ## your code here
+    data = np.loadtxt(path, delimiter=',', skiprows=2)
 
     # save each vector as own variable
     ## your code here
+    time = data[:, 0]
+    signal = data[:, 1]  # MLII ECG measurements; column 0 contains time.
+    sampling_rate = (len(time) - 1) / (time[-1] - time[0])
 
     # identify one column to process. Call that column signal
 
-    signal = -1 ## your code here
+    # Band-pass filtering removes baseline drift and high-frequency noise.
+    # Use the sampling rate so the cutoff frequencies are in Hz.
+    sos = butter(3, [5, 18], btype='bandpass', fs=sampling_rate, output='sos')
+    bandpass_signal = sosfiltfilt(sos, signal)
 
-    # pass data through LOW PASS FILTER (OPTIONAL)
-    ## your code here
+    # Differentiate and square to emphasize the rapid changes in each beat.
+    differentiated_signal = np.diff(bandpass_signal, prepend=bandpass_signal[0])
+    squared_signal = differentiated_signal ** 2
 
-    # pass data through HIGH PASS FILTER (OPTIONAL) to create BAND PASS result
-    ## your code here
+    # Average over 120 ms, preserving the original sample indices.
+    averaged_signal = uniform_filter1d(
+        squared_signal, size=max(1, round(0.12 * sampling_rate))
+    )
 
-    # pass data through differentiator
-    ## your code here
+    # Adapt the threshold to the surrounding three seconds. A global maximum
+    # can be dominated by a noise spike and cause most beats to be missed.
+    local_energy = uniform_filter1d(
+        averaged_signal, size=max(1, round(3.0 * sampling_rate))
+    )
+    peaks, _ = find_peaks(
+        averaged_signal,
+        distance=max(1, int(0.28 * sampling_rate)),
+        height=0.7 * local_energy,
+    )
 
-    # pass data through square function
-    ## your code here
-
-    # pass through moving average window
-    ## your code here
-
-    # use find_peaks to identify peaks within averaged/filtered data
-    # save the peaks result and return as part of testbench result
-
-    ## your code here peaks,_ = find_peaks(....)
-
-    beats = None
+    # Return the processed signal for plotting alongside the detected indices.
+    signal = averaged_signal
+    beats = peaks
 
     # do not modify this line
     return signal, beats
@@ -71,7 +84,7 @@ if __name__ == "__main__":
     ### DO NOT MODIFY BELOW THIS LINE!!! ###
 
     # path to ekg folder
-    path_to_folder = "../../../data/ekg/"
+    path_to_folder = str(Path(__file__).resolve().parents[3] / "data" / "ekg") + "/"
 
     # select a signal file to run
     signal_filepath = path_to_folder + database_name + ".csv"

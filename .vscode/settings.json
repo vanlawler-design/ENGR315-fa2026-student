@@ -1,0 +1,6 @@
+{
+    "python.defaultInterpreterPath": "/Users/vanlawler/Documents/ENGR315/ENGR315-fa2026-student/.venv/bin/python",
+    "python.terminal.shellIntegration.enabled": false,
+    "python.terminal.executeInFileDir": false,
+    "python.useEnvironmentsExtension": false
+}
